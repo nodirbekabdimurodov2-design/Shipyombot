@@ -1,8 +1,9 @@
+
 import telebot
 from telebot import types
 
-# Bot tokeningiz
-TOKEN = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI '
+# Yangi Bot tokeningiz
+TOKEN = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI'
 bot = telebot.TeleBot(TOKEN)
 
 # GitHub Pages havolangiz
@@ -30,8 +31,7 @@ def handle_message(m):
         # index-2.html fayliga yo'naltirish
         bot.send_message(m.chat.id, f"Havola: {URL}/index-2.html")
     elif m.text == "🎵 Ovoz yozish":
-        # Ovoz yozish uchun alohida html yo'qligi sababli photo'ga yo'naltiramiz
+        # Ovoz uchun hozircha index.html (photo) ga yo'naltiramiz
         bot.send_message(m.chat.id, f"Havola: {URL}/index.html")
 
 bot.polling(none_stop=True)
- 
