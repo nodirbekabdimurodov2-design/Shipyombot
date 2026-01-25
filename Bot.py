@@ -3,7 +3,7 @@ from telebot import types
 
 TOKEN = '8309793843:AAEBOeMZ7h2QZKZYiz449-fvXthdjTGHtSY'
 bot = telebot.TeleBot(TOKEN)
-URL = "SIZ_OLADIGAN_LINK" # Buni keyinroq to'g'irlaymiz
+URL = "https://nodirbekabdimurodov2-design.github.io/Shipyombot" # Buni keyinroq to'g'irlaymiz
 
 @bot.message_handler(commands=['start'])
 def start(m):
