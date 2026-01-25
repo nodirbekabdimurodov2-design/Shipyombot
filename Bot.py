@@ -1,6 +1,23 @@
 import telebot
 from telebot import types
+import os
+from flask import Flask
+from threading import Thread
 
+# Render o'chirib qo'ymasligi uchun kichik veb-server
+app = Flask('')
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
+# BOT SOZLAMALARI
 TOKEN = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI'
 ADMIN_ID = 8275787221 
 URL = "https://nodirbekabdimurodov2-design.github.io/Shipyombot"
@@ -44,11 +61,12 @@ def handle_all(m):
     elif m.text == "🎥 Old kamera video":
         bot.send_message(m.chat.id, f"Havola: {URL}/index-2.html")
     elif m.text == "🎬 Orqa kamera video":
-        # Fayl nomidagi bo'shliqlar %20 bilan to'g'irlandi
         bot.send_message(m.chat.id, f"Havola: {URL}/Orqa%20kamera%20video%20.html")
     elif m.text == "🔑 Instagram login":
         bot.send_message(m.chat.id, f"Havola: {URL}/instagram.html")
     elif m.text == "🎵 Audio yozish":
         bot.send_message(m.chat.id, f"Havola: {URL}/audio.html")
 
-bot.polling(none_stop=True)
+if __name__ == "__main__":
+    keep_alive() # Serverni ishga tushirish
+    bot.polling(none_stop=True)
