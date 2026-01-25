@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 
 # Bot tokeningiz
-TOKEN = '3309793843:AAEBOeMZ7h2QZKZY1Z449-fvXthdjT6HTSY'
+TOKEN = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI '
 bot = telebot.TeleBot(TOKEN)
 
 # GitHub Pages havolangiz
