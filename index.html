@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Kamera test (demo)</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
+        video, canvas { margin-top: 10px; border: 1px solid #ccc; }
+        button { padding: 8px 14px; margin: 6px; }
+    </style>
+</head>
+<body>
+
+<h2>Kamerani yoqish (demo)</h2>
+<p>Tugmani bosish orqali kamerani o‘zingiz ruxsat bilan yoqasiz</p>
+
+<button onclick="startCamera()">Kamerani yoqish</button>
+<br>
+
+<video id="video" width="320" height="240" autoplay playsinline></video>
+<br>
+<button onclick="takePhoto()">Rasm olish</button>
+<br>
+
+<canvas id="canvas" width="320" height="240"></canvas>
+
+<script>
+let stream;
+
+function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(s => {
+            stream = s;
+            document.getElementById('video').srcObject = stream;
+        })
+        .catch(err => {
+            alert("Kamera ruxsati berilmadi");
+        });
+}
+
+function takePhoto() {
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const imageData = canvas.toDataURL('image/png');
+    console.log(imageData); // demo uchun
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Video yozish (demo)</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
+        video { margin-top: 10px; border: 1px solid #ccc; }
+        button { padding: 8px 14px; margin: 6px; }
+    </style>
+</head>
+<body>
+
+<h2>Video yozish (demo)</h2>
+<p>Yozish faqat tugma bosilganda va ruxsat bilan boshlanadi</p>
+
+<button onclick="startRecording()">Yozishni boshlash</button>
+<button onclick="stopRecording()" disabled id="stopBtn">Yozishni to‘xtatish</button>
+
+<br>
+<video id="preview" width="320" height="240" autoplay muted playsinline></video>
+<br>
+<video id="playback" width="320" height="240" controls></video>
+
+<script>
+let stream;
+let mediaRecorder;
+let chunks = [];
+
+async function startRecording() {
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        document.getElementById('preview').srcObject = stream;
+
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        chunks = [];
+
+        mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) chunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const playback = document.getElementById('playback');
+            playback.src = url;
+            playback.play();
+        };
+
+        mediaRecorder.start();
+        document.getElementById('stopBtn').disabled = false;
+    } catch (err) {
+        alert("Kamera yoki mikrofon ruxsati berilmadi");
+    }
+}
+
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        document.getElementById('stopBtn').disabled = true;
+        if (stream) stream.getTracks().forEach(t => t.stop());
+    }
+}
+</script>
+
+</body>
+</html>
