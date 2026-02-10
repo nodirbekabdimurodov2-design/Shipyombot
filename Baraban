@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamkorbank - Yutuqli O'yin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #wheel {
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+            border: 10px solid #0056b3;
+            border-radius: 50%;
+        }
+        .pointer {
+            width: 0; height: 0; 
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 30px solid #ff0000;
+            position: absolute; top: -10px; left: 50%;
+            transform: translateX(-50%); z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-blue-50 flex flex-col items-center justify-center min-h-screen p-4 font-sans">
+
+    <img src="https://telegram.org/img/t_logo.png" alt="Logo" class="w-20 mb-4"> <h1 class="text-2xl font-bold text-blue-900 mb-2">Omadli Baraban</h1>
+    <p class="text-gray-600 mb-8 text-center">Tugmani bosing va yutuqni qo'lga kiriting!</p>
+
+    <div class="relative w-72 h-72 mb-8">
+        <div class="pointer"></div>
+        <img id="wheel" src="https://i.ibb.co/3s6X9pC/wheel.png" alt="Baraban" class="w-full h-full">
+    </div>
+
+    <button id="spinBtn" onclick="spin()" class="bg-blue-600 text-white px-10 py-3 rounded-full text-xl font-bold hover:bg-blue-700 shadow-lg active:scale-95 transition">
+        AYLANTIRISH
+    </button>
+
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-2xl max-w-sm w-full text-center shadow-2xl">
+            <h2 class="text-3xl mb-2">🎁</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">TABRIKLAYMIZ!</h2>
+            <p class="text-lg text-green-600 font-bold mb-4">Siz 1 000 000 so'm yutib oldingiz!</p>
+            <p class="text-sm text-gray-500 mb-6">Yutuqni kartangizga o'tkazish uchun "Hamkor Mobile" yangilangan ilovasini yuklab oling va tasdiqlang.</p>
+            <a href="HAQIQIY_APK_HAVOLASI" class="block bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600 transition">
+                ILOVANI YUKLAB OLISH
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let isSpinning = false;
+
+        function spin() {
+            if (isSpinning) return;
+            isSpinning = true;
+            
+            const wheel = document.getElementById('wheel');
+            const spinBtn = document.getElementById('spinBtn');
+            
+            // Random aylanish gradusi (lekin har doim yutuq segmentida to'xtaydigan qilib sozlash mumkin)
+            const deg = Math.floor(3000 + Math.random() * 2000);
+            wheel.style.transform = `rotate(${deg}deg)`;
+            
+            spinBtn.disabled = true;
+            spinBtn.classList.add('opacity-50');
+
+            setTimeout(() => {
+                document.getElementById('modal').classList.remove('hidden');
+            }, 4500); // 4 soniyadan keyin modal chiqadi
+        }
+    </script>
+</body>
+</html>
